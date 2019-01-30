@@ -32,7 +32,7 @@ module "linuxserver" {
   location	      = "West US 2"
   vm_os_simple	      = "UbuntuServer"
   public_ip_dns	      = "jlinn-az-linux"
-  vnet_subnet_id      = ""${module.network.vnet_subnets[0]}"
+  vnet_subnet_id      = "${module.network.vnet_subnets[0]}"
   vm_hostname	      = "jlinn-az-linux"
 }
 
@@ -42,6 +42,7 @@ module "network" {
   location            = "${var.location}"
   resource_group_name = "${var.windows_dns_prefix}-rc"
   allow_ssh_traffic   = true
+  allow_rdp_traffic   = true
 }
 
 output "linux_vm_public_name"{
