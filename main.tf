@@ -21,11 +21,19 @@ module "windowsserver" {
   version             = "1.1.5"
   location            = "${var.location}"
   resource_group_name = "${var.windows_dns_prefix}-rc"
-  vm_hostname         = "pwc-ptfe"
+  vm_hostname         = "jlinn-az-win"
   admin_password      = "${var.admin_password}"
   vm_os_simple        = "WindowsServer"
   public_ip_dns       = ["${var.windows_dns_prefix}"]
   vnet_subnet_id      = "${module.network.vnet_subnets[0]}"
+}
+module "linuxserver" {
+  source	      = "Azure/compute/azurerm"
+  location	      = "West US 2"
+  vm_os_simple	      = "UbuntuServer"
+  public_ip_dns	      = "jlinn-az-linux"
+  vnet_subnet_id      = ""${module.network.vnet_subnets[0]}"
+  vm_hostname	      = "jlinn-az-linux"
 }
 
 module "network" {
@@ -34,6 +42,10 @@ module "network" {
   location            = "${var.location}"
   resource_group_name = "${var.windows_dns_prefix}-rc"
   allow_ssh_traffic   = true
+}
+
+output "linux_vm_public_name"{
+  value = "${module.linuxservers.public_ip_dns_name}"
 }
 
 output "windows_vm_public_name"{
