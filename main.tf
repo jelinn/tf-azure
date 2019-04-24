@@ -27,14 +27,6 @@ module "windowsserver" {
   public_ip_dns       = ["${var.windows_dns_prefix}"]
   vnet_subnet_id      = "${module.network.vnet_subnets[0]}"
 }
-module "linuxserver" {
-  source	      = "Azure/compute/azurerm"
-  location	      = "West US 2"
-  vm_os_simple	      = "UbuntuServer"
-  public_ip_dns	      = ["jlinn-az-linux"]
-  vnet_subnet_id      = "${module.network.vnet_subnets[0]}"
-  vm_hostname	      = "jlinn-az-linux"
-}
 
 module "network" {
   source              = "Azure/network/azurerm"
@@ -45,9 +37,6 @@ module "network" {
   allow_rdp_traffic   = true
 }
 
-output "linux_vm_public_name"{
-  value = "${module.linuxserver.public_ip_dns_name}"
-}
 
 output "windows_vm_public_name"{
   value = "${module.windowsserver.public_ip_dns_name}"
