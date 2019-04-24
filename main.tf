@@ -26,7 +26,7 @@ module "windowsserver" {
   vm_os_simple        = "WindowsServer"
   public_ip_dns       = ["${var.windows_dns_prefix}"]
   vnet_subnet_id      = "${module.network.vnet_subnets[0]}"
-  nb_instances        = "1"
+  nb_instances        = "3"
 }
 
 module "network" {
