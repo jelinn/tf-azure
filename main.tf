@@ -8,9 +8,9 @@ data "terraform_remote_state" "network" {
 
 resource "azurerm_virtual_machine" "main" {
   name                  = "jlinn-test-vm"
-  location              = "${data.terraform_remote_state.network.outputs.resource_group_location}"
-  resource_group_name   = "${data.terraform_remote_state.network.outputs.resource_group_name}"
-  network_interface_ids = ["${data.terraform_remote_state.network.outputs.network_interface_id}"]
+  location              = "${data.terraform_remote_state.network.output.resource_group_location}"
+  resource_group_name   = "${data.terraform_remote_state.network.output.resource_group_name}"
+  network_interface_ids = ["${data.terraform_remote_state.network.output.network_interface_id}"]
   vm_size               = "Standard_DS1_v2"
 
   # Uncomment this line to delete the OS disk automatically when deleting the VM
@@ -47,8 +47,8 @@ resource "azurerm_virtual_machine" "main" {
 
 resource "azurerm_network_security_group" "test" {
   name                = "acceptanceTestSecurityGroup1"
-  location            = "${data.terraform_remote_state.network.outputs.resource_group_location}"
-  resource_group_name = "${data.terraform_remote_state.network.outputs.resource_group_name}"
+  location            = "${data.terraform_remote_state.network.output.resource_group_location}"
+  resource_group_name = "${data.terraform_remote_state.network.output.resource_group_name}"
 
   security_rule {
     name                       = "test123"
