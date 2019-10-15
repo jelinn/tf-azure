@@ -1,60 +1,16 @@
-# Configure the Azure Provider
-provider "azurerm" {
-}
+data "terraform_remote_state" "network" {
+  backend = "atlas"
 
-# Create a resource group
-resource "azurerm_resource_group" "test" {
-  name     = "production"
-  location = "West US"
-}
-
-# Create a virtual network within the resource group
-resource "azurerm_virtual_network" "test" {
-  name                = "production-network"
-  resource_group_name = "${azurerm_resource_group.test.name}"
-  location            = "${azurerm_resource_group.test.location}"
-  address_space       = ["10.0.0.0/16"]
-}
-variable "prefix" {
-  default = "tfvmex"
-}
-
-resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-resources"
-  location = "West US 2"
-}
-
-resource "azurerm_virtual_network" "main" {
-  name                = "${var.prefix}-network"
-  address_space       = ["10.0.0.0/16"]
-  location            = "${azurerm_resource_group.main.location}"
-  resource_group_name = "${azurerm_resource_group.main.name}"
-}
-
-resource "azurerm_subnet" "internal" {
-  name                 = "internal"
-  resource_group_name  = "${azurerm_resource_group.main.name}"
-  virtual_network_name = "${azurerm_virtual_network.main.name}"
-  address_prefix       = "10.0.2.0/24"
-}
-
-resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
-  location            = "${azurerm_resource_group.main.location}"
-  resource_group_name = "${azurerm_resource_group.main.name}"
-
-  ip_configuration {
-    name                          = "testconfiguration1"
-    subnet_id                     = "${azurerm_subnet.internal.id}"
-    private_ip_address_allocation = "Dynamic"
+  config {
+    name = "jlinn/azure-vm-network-test"
   }
 }
 
 resource "azurerm_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
-  location              = "${azurerm_resource_group.main.location}"
-  resource_group_name   = "${azurerm_resource_group.main.name}"
-  network_interface_ids = ["${azurerm_network_interface.main.id}"]
+  location              = "${data.terraform_remote_state.network.resource_group.location}"
+  resource_group_name   = "${data.terraform_remote_state.network.resource_group.name}"
+  network_interface_ids = ["${data.terraform_remote_state.network.network_interface_id}"]
   vm_size               = "Standard_DS1_v2"
 
   # Uncomment this line to delete the OS disk automatically when deleting the VM
@@ -91,8 +47,8 @@ resource "azurerm_virtual_machine" "main" {
 
 resource "azurerm_network_security_group" "test" {
   name                = "acceptanceTestSecurityGroup1"
-  location            = "${azurerm_resource_group.test.location}"
-  resource_group_name = "${azurerm_resource_group.test.name}"
+  location            = "${data.terraform_remote_state.network.resource_group.location}"
+  resource_group_name = "${data.terraform_remote_state.network.resource_group.name}"
 
   security_rule {
     name                       = "test123"
