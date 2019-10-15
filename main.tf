@@ -7,7 +7,7 @@ data "terraform_remote_state" "network" {
 }
 
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
+  name                  = "jlinn-test-vm"
   location              = "${data.terraform_remote_state.network.outputs.resource_group_location}"
   resource_group_name   = "${data.terraform_remote_state.network.outputs.resource_group_name}"
   network_interface_ids = ["${data.terraform_remote_state.network.outputs.network_interface_id}"]
