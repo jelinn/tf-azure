@@ -1,7 +1,7 @@
 data "terraform_remote_state" "network" {
   backend = "atlas"
   workspace = "jlinn/azurem-vm-network-test"
-  }
+  
 }
 
 resource "azurerm_virtual_machine" "main" {
