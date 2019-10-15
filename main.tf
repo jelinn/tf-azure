@@ -2,7 +2,7 @@ data "terraform_remote_state" "network" {
   backend = "atlas"
 
   config = {
-    name = "jlinn/azure-vm-network-test"
+    name = "jlinn/azure-vm-module-test"
   }
 }
 
